@@ -1,6 +1,7 @@
 import express from 'express';
 import axios from 'axios';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 // Load environment variables from .env
 dotenv.config();
@@ -10,6 +11,9 @@ const port = 3000;
 
 // Middleware to parse JSON requests
 app.use(express.json());
+
+// Middleware to allow cross-origin requests
+app.use(cors());
 
 // Test endpoint
 app.get('/api', (req, res) => {
@@ -38,7 +42,7 @@ app.post('/api/ask', async (req, res) => {
 
     const openaiResponse = await axios.post('https://api.openai.com/v1/chat/completions', requestBody, {
       headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${process.env.OPENAPI_KEY}`,
         'Content-Type': 'application/json',
       }
     });

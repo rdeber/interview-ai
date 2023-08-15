@@ -10,23 +10,19 @@ function Gpt3Form() {
     const [jobDescription, setJobDescription] = useState("");
     const [interviewType, setInterviewType] = useState("");
 
-    const handleResumeChange = (event) => {
+    const handleResumeChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setresume(event.target.value);
     };
 
-    const handleJobChange = (event) => {
+    const handleJobChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setJob(event.target.value);
     };
 
-    const handleUserNameChange = (event) => {
+    const handleUserNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUserName(event.target.value);
     };
 
-    const handleInterviewTypeChange = (event) => {
-        setInterviewType(event.target.value);
-    };
-
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const serverResponse = await axios.post('http://localhost:3000/api/ask', { resume, job, userName });
         setResponse(serverResponse.data.response);
@@ -57,14 +53,14 @@ function Gpt3Form() {
                         onChange={handleResumeChange}
                         placeholder="Paste your resume text"
                         className="w-full p-4 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-800 transition duration-200 resize-y lg:flex-1"
-                        rows="5"
+                        rows={5}
                     ></textarea>
                     <textarea
                         value={job}
                         onChange={handleJobChange}
                         placeholder="Paste the job description"
                         className="w-full p-4 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-800 transition duration-200 resize-y lg:flex-1"
-                        rows="5"
+                        rows={5}
                     ></textarea>
                     <button
                         type="submit"

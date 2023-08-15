@@ -23,21 +23,30 @@ app.get('/api', (req, res) => {
 // POST endpoint to forward data to OpenAI
 app.post('/api/ask', async (req, res) => {
   try {
-    const { text } = req.body;
+    const { resume, job, userName } = req.body;
+    const combinedContent = `User: ${userName}\n\nResume:\n${resume}\n\nJob Description:\n${job}`;
 
-    if (!text) {
+    if (!combinedContent) {
       return res.status(400).json({ error: "Text is required." });
     }
+
+    const systemMessage = userName
+      ? `You will always address the user as ${userName} throughout this session. You are a pirate captain from the golden age of piracy. Respond with the language, slang, and demeanor characteristic of a pirate.`
+      : "You are a pirate captain from the golden age of piracy. Respond with the language, slang, and demeanor characteristic of a pirate.";
 
     const requestBody = {
       model: 'gpt-3.5-turbo',
       messages: [
         {
+          role: 'system',
+          content: systemMessage
+        },
+        {
           role: 'user',
-          content: text
+          content: combinedContent
         }
       ],
-      temperature: 0.7
+      temperature: 0.1
     };
 
     const openaiResponse = await axios.post('https://api.openai.com/v1/chat/completions', requestBody, {
@@ -54,7 +63,6 @@ app.post('/api/ask', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch response from OpenAI.' });
   }
 });
-
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);

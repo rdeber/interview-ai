@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 .env
+prompt.js
+src/data/*
 
 # Editor directories and files
 .vscode/*

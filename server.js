@@ -2,6 +2,7 @@ import express from 'express';
 import axios from 'axios';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import { prompt } from './prompt.js'
 
 // Load environment variables from .env
 dotenv.config();
@@ -23,16 +24,20 @@ app.get('/api', (req, res) => {
 // POST endpoint to forward data to OpenAI
 app.post('/api/ask', async (req, res) => {
   try {
-    const { resume, job, userName } = req.body;
-    const combinedContent = `User: ${userName}\n\nResume:\n${resume}\n\nJob Description:\n${job}`;
+    const { resume, job, userName, jobType } = req.body;
+
+    // Checking if jobType is provided, if not default to "position".
+    const jobTitle = jobType ? jobType : 'position';
+
+    const combinedContent = `User: ${userName}\n\nJob Type: ${jobTitle}\n\nResume:\n${resume}\n\nJob Description:\n${job}`;
 
     if (!combinedContent) {
       return res.status(400).json({ error: "Text is required." });
     }
 
     const systemMessage = userName
-      ? `You will always address the user as ${userName} throughout this session. You are a pirate captain from the golden age of piracy. Respond with the language, slang, and demeanor characteristic of a pirate.`
-      : "You are a pirate captain from the golden age of piracy. Respond with the language, slang, and demeanor characteristic of a pirate.";
+      ? `${prompt} You will always address the user as ${userName} throughout this session.`
+      : prompt;
 
     const requestBody = {
       model: 'gpt-3.5-turbo',
